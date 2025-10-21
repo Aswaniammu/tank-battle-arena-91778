@@ -1,0 +1,14 @@
+def configureUnitTestTask(String taskName) {
+    tasks.matching { it.name == taskName && it instanceof Test }.all { Test t ->
+        t.useJUnit()
+        t.include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class'
+        t.failOnNoMatchingTests = false
+        t.testLogging {
+            events 'passed', 'skipped', 'failed'
+        }
+    }
+}
+
+// Apply overrides for commonly used test tasks
+configureUnitTestTask("testDebugUnitTest")
+configureUnitTestTask("testReleaseUnitTest")

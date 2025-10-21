@@ -1,0 +1,22 @@
+ext {
+    // Properties for test tasks to be consumed by configuration blocks
+    testTaskOverrides = [
+        testDebugUnitTest : [ failOnNoDiscoveredTests: false, failOnNoMatchingTests: false ],
+        testReleaseUnitTest: [ failOnNoDiscoveredTests: false, failOnNoMatchingTests: false ],
+    ]
+}
+allprojects {
+    tasks.configureEach { t ->
+        def cfg = rootProject.hasProperty('testTaskOverrides') ? rootProject.ext.testTaskOverrides.get(t.name) : null
+        if (cfg != null) {
+            if (t.hasProperty('failOnNoDiscoveredTests')) {
+                t.setProperty('failOnNoDiscoveredTests', cfg.failOnNoDiscoveredTests)
+            }
+            if (t instanceof Test) {
+                t.failOnNoMatchingTests = cfg.failOnNoMatchingTests
+                t.useJUnit()
+                t.include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class'
+            }
+        }
+    }
+}

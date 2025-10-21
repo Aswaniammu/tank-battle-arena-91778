@@ -1,15 +1,19 @@
 import json
 import os
 
-from src.api.main import app
+# Import app so that all routers and startup wiring are registered prior to schema generation
+from src.api.main import app  # noqa: F401
 
-# Get the OpenAPI schema
-openapi_schema = app.openapi()
+def main() -> None:
+    """Generate and write the OpenAPI schema for the backend into interfaces/openapi.json."""
+    # PUBLIC_INTERFACE
+    openapi_schema = app.openapi()
 
-# Write to file
-output_dir = "interfaces"
-os.makedirs(output_dir, exist_ok=True)
-output_path = os.path.join(output_dir, "openapi.json")
+    output_dir = "interfaces"
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "openapi.json")
+    with open(output_path, "w") as f:
+        json.dump(openapi_schema, f, indent=2)
 
-with open(output_path, "w") as f:
-    json.dump(openapi_schema, f, indent=2)
+if __name__ == "__main__":
+    main()

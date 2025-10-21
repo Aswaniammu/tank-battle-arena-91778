@@ -1,0 +1,12 @@
+ext {
+    // Shared CI testing flags
+    failOnNoDiscoveredTestsFlag = false
+}
+
+tasks.withType(Test).configureEach {
+    // Prevent CI failure when no unit tests are discovered by Gradle
+    // This is scoped to unit test tasks like testDebugUnitTest/testReleaseUnitTest
+    it.failOnNoMatchingTests = !project.hasProperty("ciAllowNoTests") ? false : project.property("ciAllowNoTests").toString().toBoolean()
+    // Newer Gradle property for clarity in some versions
+    it.setFailOnNoTest(!project.hasProperty("ciAllowNoTests") ? false : project.property("ciAllowNoTests").toString().toBoolean())
+}

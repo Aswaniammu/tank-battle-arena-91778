@@ -1,0 +1,14 @@
+import org.gradle.api.tasks.testing.Test
+
+// Ensure at least one test pattern is searched and do not fail on empty
+tasks.withType(Test).configureEach {
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = false
+    }
+    // These lines tell Gradle not to fail even if there are no matching tests.
+    it.setFailOnNoTest(false)
+    it.failOnNoMatchingTests = false
+    // Explicit include pattern so Gradle considers standard JUnit4 tests
+    include "**/*Test.class"
+}

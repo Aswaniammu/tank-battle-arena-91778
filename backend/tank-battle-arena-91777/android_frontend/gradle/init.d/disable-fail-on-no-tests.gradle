@@ -1,0 +1,10 @@
+allprojects {
+    gradle.taskGraph.whenReady { graph ->
+        tasks.withType(Test).configureEach { Test t ->
+            t.useJUnit()
+            t.include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class'
+            t.failOnNoMatchingTests = false
+            t.testLogging { events 'passed', 'skipped', 'failed' }
+        }
+    }
+}

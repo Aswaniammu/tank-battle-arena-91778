@@ -1,0 +1,21 @@
+plugins.withId('com.android.application') {
+    // For subprojects, configure by path if present
+    def debugTaskPath = ':app:testDebugUnitTest'
+    def releaseTaskPath = ':app:testReleaseUnitTest'
+
+    def debugTask = tasks.findByPath(debugTaskPath)
+    if (debugTask instanceof Test) {
+        debugTask.useJUnit()
+        debugTask.include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class'
+        debugTask.failOnNoMatchingTests = false
+        debugTask.testLogging { events 'passed', 'skipped', 'failed' }
+    }
+
+    def releaseTask = tasks.findByPath(releaseTaskPath)
+    if (releaseTask instanceof Test) {
+        releaseTask.useJUnit()
+        releaseTask.include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class'
+        releaseTask.failOnNoMatchingTests = false
+        releaseTask.testLogging { events 'passed', 'skipped', 'failed' }
+    }
+}

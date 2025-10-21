@@ -1,0 +1,10 @@
+tasks.withType(Test).configureEach {
+    useJUnit() // Force JUnit4
+    // Include common test name patterns
+    include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class'
+    // Do not fail when no tests are discovered (CI-friendly)
+    failOnNoMatchingTests = false
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+    }
+}

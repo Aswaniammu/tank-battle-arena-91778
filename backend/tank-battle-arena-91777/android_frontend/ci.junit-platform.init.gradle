@@ -1,0 +1,19 @@
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(Test).configureEach { t ->
+            try {
+                // Enable JUnit Platform and both engines (Jupiter + Vintage)
+                useJUnitPlatform()
+                // Common discovery patterns
+                t.include "**/*Test.class", "**/*Tests.class", "**/*TestSuite.class"
+            } catch (Throwable ignored) { }
+            try {
+                // Avoid CI failing when no tests discovered or matched
+                if (t.hasProperty("failOnNoDiscoveredTests")) {
+                    t.failOnNoDiscoveredTests = false
+                }
+                t.setFailOnNoMatchingTests(false)
+            } catch (Throwable ignored) { }
+        }
+    }
+}

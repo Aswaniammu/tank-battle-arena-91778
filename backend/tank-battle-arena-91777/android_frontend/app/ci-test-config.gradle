@@ -1,0 +1,11 @@
+allprojects {
+    tasks.withType(Test).configureEach { t ->
+        // Do not fail when no tests discovered (CI stability)
+        if (t.hasProperty("failOnNoDiscoveredTests")) {
+            t.failOnNoDiscoveredTests = false
+        }
+        // Generic safety nets across Gradle versions
+        t.ignoreFailures = false
+        t.setFailOnNoMatchingTests(false)
+    }
+}

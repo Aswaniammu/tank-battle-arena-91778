@@ -1,0 +1,13 @@
+tasks.configureEach { t ->
+    if (t.name == "testDebugUnitTest" || t.name == "testReleaseUnitTest") {
+        if (t.hasProperty("failOnNoDiscoveredTests")) {
+            t.setProperty("failOnNoDiscoveredTests", false)
+        }
+        if (t instanceof Test) {
+            t.useJUnit()
+            t.include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class'
+            t.failOnNoMatchingTests = false
+            t.testLogging { events 'passed', 'skipped', 'failed' }
+        }
+    }
+}

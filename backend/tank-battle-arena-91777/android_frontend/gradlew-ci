@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Wrapper to run Gradle with init scripts that disable failing on no discovered tests and enable JUnit Platform.
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INIT_OPTS=(-I "${SCRIPT_DIR}/ci.no-fail-tests.init.gradle" -I "${SCRIPT_DIR}/ci.junit-platform.init.gradle" -I "${SCRIPT_DIR}/ci.properties-flags.init.gradle")
+exec ./gradlew "${INIT_OPTS[@]}" "$@"

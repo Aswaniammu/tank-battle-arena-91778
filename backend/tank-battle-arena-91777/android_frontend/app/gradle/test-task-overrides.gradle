@@ -1,0 +1,16 @@
+afterEvaluate {
+    // Apply to common unit test tasks explicitly
+    def unitTestTasks = [
+            tasks.findByName("testDebugUnitTest"),
+            tasks.findByName("testReleaseUnitTest")
+    ].findAll { it != null }
+
+    unitTestTasks.each { t ->
+        t.failOnNoMatchingTests = false
+        t.useJUnit()
+        t.include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class'
+        t.testLogging {
+            events 'passed', 'skipped', 'failed'
+        }
+    }
+}

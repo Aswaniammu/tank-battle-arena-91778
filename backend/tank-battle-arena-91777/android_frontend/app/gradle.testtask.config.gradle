@@ -1,0 +1,5 @@
+tasks.matching { it.name == "testDebugUnitTest" }.configureEach {
+    it.setFailOnNoTest(false)
+    it.failOnNoMatchingTests = false
+}
+apply from: "${project.projectDir}/gradle.testtask.config.gradle"

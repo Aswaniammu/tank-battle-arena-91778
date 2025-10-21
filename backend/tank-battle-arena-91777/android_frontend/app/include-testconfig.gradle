@@ -1,0 +1,1 @@
+apply from: "${project.projectDir}/build-testconfig-include.gradle"

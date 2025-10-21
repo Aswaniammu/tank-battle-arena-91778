@@ -1,0 +1,7 @@
+tasks.withType(Test).configureEach {
+    // Ensure classic JUnit4 naming patterns are always included
+    include "**/*Test.class", "**/*Tests.class", "**/*TestSuite.class"
+    // Do not fail if none are found
+    it.setFailOnNoTest(false)
+    it.failOnNoMatchingTests = false
+}

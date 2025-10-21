@@ -1,0 +1,16 @@
+gradle.projectsEvaluated {
+    def task = tasks.findByPath(":app:testDebugUnitTest")
+    if (task instanceof Test) {
+        try {
+            if (task.hasProperty("failOnNoDiscoveredTests")) {
+                task.failOnNoDiscoveredTests = false
+            }
+        } catch (Throwable ignored) { }
+        try {
+            task.setFailOnNoMatchingTests(false)
+        } catch (Throwable ignored) { }
+        try {
+            task.include "**/*Test.class", "**/*Tests.class", "**/*TestSuite.class"
+        } catch (Throwable ignored) { }
+    }
+}

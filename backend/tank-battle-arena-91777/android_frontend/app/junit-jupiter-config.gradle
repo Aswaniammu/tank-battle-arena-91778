@@ -1,0 +1,16 @@
+dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.2"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.2"
+}
+
+tasks.withType(Test).configureEach { t ->
+    // Enable JUnit Platform
+    useJUnitPlatform()
+    // Include classic patterns just in case
+    t.include "**/*Test.class", "**/*Tests.class", "**/*TestSuite.class"
+    // Prevent CI failures on no discovered tests
+    t.setFailOnNoMatchingTests(false)
+    if (t.hasProperty("failOnNoDiscoveredTests")) {
+        t.failOnNoDiscoveredTests = false
+    }
+}

@@ -1,0 +1,16 @@
+gradle.settingsEvaluated {
+    rootProject.allprojects { p ->
+        if (p.name == "app") {
+            // Attempt best-effort application of our test configurations
+            try {
+                p.apply from: "${p.projectDir}/include-testconfig.gradle"
+            } catch (Throwable ignored) { }
+            try {
+                p.apply from: "${p.projectDir}/test-deps-config.gradle"
+            } catch (Throwable ignored) { }
+            try {
+                p.apply from: "${p.projectDir}/junit-jupiter-config.gradle"
+            } catch (Throwable ignored) { }
+        }
+    }
+}

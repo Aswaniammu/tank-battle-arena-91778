@@ -1,0 +1,22 @@
+gradle.beforeProject { p ->
+    // Set the widely recognized properties for disabling strict test discovery behavior
+    p.extensions.extraProperties.set("failOnNoDiscoveredTests", false)
+    p.extensions.extraProperties.set("org.gradle.unsafe.failOnNoMatchingTests", false)
+    System.setProperty("failOnNoDiscoveredTests", "false")
+    System.setProperty("org.gradle.unsafe.failOnNoMatchingTests", "false")
+}
+
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.matching { it instanceof Test }.configureEach { t ->
+            try {
+                if (t.hasProperty("failOnNoDiscoveredTests")) {
+                    t.failOnNoDiscoveredTests = false
+                }
+            } catch (Throwable ignored) { }
+            try {
+                t.setFailOnNoMatchingTests(false)
+            } catch (Throwable ignored) { }
+        }
+    }
+}

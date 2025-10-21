@@ -1,0 +1,17 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+gradlePlugin {
+    plugins {
+        testNoFail {
+            id = 'com.example.test-no-fail'
+            implementationClass = 'TestNoFailPlugin'
+        }
+    }
+}

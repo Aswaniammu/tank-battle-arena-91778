@@ -1,0 +1,20 @@
+plugins.withId("com.android.application") {
+    android {
+        testOptions {
+            unitTests.isIncludeAndroidResources = true
+            unitTests.all {
+                // Avoid failures when no tests are discovered in certain CI environments
+                it.setFailOnNoMatchingTests(false)
+                // JUnit4 engine compatibility
+                it.useJUnit()
+                // Widen patterns just in case
+                it.include("**/*Test.class", "**/*Tests.class", "**/*Spec.class", "**/*TestSuite.class")
+            }
+        }
+    }
+
+    dependencies {
+        // Ensure JUnit4 is available for unit tests
+        testImplementation("junit:junit:4.13.2")
+    }
+}

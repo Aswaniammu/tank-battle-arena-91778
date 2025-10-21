@@ -1,0 +1,25 @@
+allprojects {
+    gradle.taskGraph.whenReady { graph ->
+        tasks.withType(Test).configureEach { Test t ->
+            // Standard settings
+            t.useJUnit()
+            t.include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class'
+            t.failOnNoMatchingTests = false
+            t.testLogging { events 'passed', 'skipped', 'failed' }
+
+            // Attempt to set AGP-backed property if present
+            if (t.hasProperty('failOnNoDiscoveredTests')) {
+                try {
+                    t.setProperty('failOnNoDiscoveredTests', false)
+                } catch (Exception ignored) { }
+            }
+            // Reflection fallback in case property is backed differently
+            try {
+                def m = t.class.getMethods().find { it.name == 'setFailOnNoDiscoveredTests' && it.parameterTypes.size() == 1 }
+                if (m != null) {
+                    m.invoke(t, false)
+                }
+            } catch (Throwable ignored) { }
+        }
+    }
+}

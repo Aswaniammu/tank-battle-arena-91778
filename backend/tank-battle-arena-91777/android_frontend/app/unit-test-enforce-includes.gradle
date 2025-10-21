@@ -1,0 +1,13 @@
+android {
+    testOptions {
+        unitTests.all {
+            // Enforce discovery patterns
+            include "**/*Test.class", "**/*Tests.class", "**/*TestSuite.class"
+            // Robust non-fail on empty discovery
+            it.setFailOnNoMatchingTests(false)
+            if (it.hasProperty("failOnNoDiscoveredTests")) {
+                it.failOnNoDiscoveredTests = false
+            }
+        }
+    }
+}

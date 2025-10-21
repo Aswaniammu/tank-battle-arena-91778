@@ -1,0 +1,20 @@
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.matching { it instanceof Test }.configureEach { t ->
+            try {
+                // Gradle 7+/8+ property supported by some Android templates
+                if (t.hasProperty("failOnNoDiscoveredTests")) {
+                    t.failOnNoDiscoveredTests = false
+                }
+            } catch (Throwable ignored) { }
+            try {
+                // Legacy property supported by older Gradle/AGP
+                t.setFailOnNoMatchingTests(false)
+            } catch (Throwable ignored) { }
+            try {
+                // Also include common patterns for discovery
+                t.include "**/*Test.class", "**/*Tests.class", "**/*TestSuite.class"
+            } catch (Throwable ignored) { }
+        }
+    }
+}

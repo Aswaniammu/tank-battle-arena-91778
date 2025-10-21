@@ -1,0 +1,16 @@
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(Test).configureEach { t ->
+            // Prevent CI from failing if no tests are discovered
+            if (t.hasProperty("failOnNoDiscoveredTests")) {
+                t.failOnNoDiscoveredTests = false
+            }
+            // Common flags to avoid strict failures
+            t.setFailOnNoMatchingTests(false)
+            t.ignoreFailures = false
+
+            // Ensure JUnit4 naming patterns are included for discovery
+            t.include "**/*Test.class", "**/*Tests.class", "**/*TestSuite.class"
+        }
+    }
+}

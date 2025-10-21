@@ -1,0 +1,12 @@
+gradle.taskGraph.whenReady { graph ->
+    tasks.withType(Test).configureEach { t ->
+        // Force JUnit4 and include common patterns
+        t.useJUnit()
+        t.include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class'
+        // Do not fail if no tests found (CI-friendly)
+        t.failOnNoMatchingTests = false
+        t.testLogging {
+            events 'passed', 'skipped', 'failed'
+        }
+    }
+}

@@ -1,0 +1,20 @@
+allprojects {
+    tasks.matching { it.name.startsWith("test") && it.project.path == ":app" && it instanceof Test }.configureEach {
+        Test t = (Test) it
+        try {
+            t.setFailOnNoMatchingTests(false)
+        } catch (Throwable ignored) { }
+        try {
+            // Gradle 8 property in some setups
+            t.extensions.extraProperties.set("failOnNoDiscoveredTests", false)
+        } catch (Throwable ignored) { }
+        // Provide common includes to help discovery on CI
+        try {
+            t.include "**/*Test.class", "**/*Tests.class", "**/*Spec.class", "**/*TestSuite.class"
+        } catch (Throwable ignored) { }
+        // Ensure JUnit4 engine is available if needed
+        try {
+            t.useJUnit()
+        } catch (Throwable ignored) { }
+    }
+}

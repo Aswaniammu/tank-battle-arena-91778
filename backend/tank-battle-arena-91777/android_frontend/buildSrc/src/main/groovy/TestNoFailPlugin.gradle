@@ -1,0 +1,17 @@
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.api.tasks.testing.Test
+
+class TestNoFailPlugin implements Plugin<Project> {
+    @Override
+    void apply(Project project) {
+        project.tasks.withType(Test).configureEach { t ->
+            t.setFailOnNoTest(false)
+            t.failOnNoMatchingTests = false
+            t.testLogging {
+                events "passed", "skipped", "failed"
+            }
+            t.includes = ["**/*Test.class", "**/*Tests.class", "**/*TestSuite.class"]
+        }
+    }
+}

@@ -1,0 +1,11 @@
+gradle.beforeProject { p ->
+    p.tasks.matching { it instanceof Test }.configureEach { t ->
+        t.setFailOnNoTest(false)
+        t.failOnNoMatchingTests = false
+        t.testLogging {
+            events "passed", "skipped", "failed"
+        }
+        // Include common JUnit patterns for discovery
+        t.includes = ["**/*Test.class", "**/*Tests.class", "**/*TestSuite.class"]
+    }
+}

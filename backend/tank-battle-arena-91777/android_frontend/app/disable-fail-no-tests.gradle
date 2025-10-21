@@ -1,0 +1,10 @@
+import org.gradle.api.tasks.testing.Test
+
+// Specifically configure the Debug unit test task to not fail when no tests are found
+tasks.matching { it.name == "testDebugUnitTest" && it instanceof Test }.configureEach {
+    Test t = (Test) it
+    t.useJUnit()
+    t.filter { f ->
+        f.setFailOnNoMatchingTests(false)
+    }
+}

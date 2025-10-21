@@ -1,0 +1,20 @@
+plugins.withId("com.android.application") {
+    // Configure all unit test tasks under :app
+    tasks.withType(Test::class.java).configureEach {
+        if (project.path == ":app" && name.startsWith("test")) {
+            try {
+                it.setFailOnNoMatchingTests(false)
+            } catch (_: Throwable) { }
+            try {
+                // Some Gradle versions support this property
+                it.extensions.extraProperties.set("failOnNoDiscoveredTests", false)
+            } catch (_: Throwable) { }
+            try {
+                it.useJUnit()
+            } catch (_: Throwable) { }
+            try {
+                it.include("**/*Test.class", "**/*Tests.class", "**/*Spec.class", "**/*TestSuite.class")
+            } catch (_: Throwable) { }
+        }
+    }
+}

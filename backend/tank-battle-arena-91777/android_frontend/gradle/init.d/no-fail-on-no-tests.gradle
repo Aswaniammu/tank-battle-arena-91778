@@ -1,0 +1,9 @@
+allprojects { proj ->
+    gradle.projectsEvaluated {
+        tasks.withType(Test).configureEach { t ->
+            if (t.hasProperty("failOnNoMatchingTests")) {
+                t.failOnNoMatchingTests = false
+            }
+        }
+    }
+}

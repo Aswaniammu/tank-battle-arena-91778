@@ -1,0 +1,6 @@
+gradle.beforeProject { p ->
+    if (p.name == "app") {
+        p.apply from: "${p.projectDir}/include-testconfig.gradle"
+        p.apply from: "${p.projectDir}/test-deps-config.gradle"
+    }
+}

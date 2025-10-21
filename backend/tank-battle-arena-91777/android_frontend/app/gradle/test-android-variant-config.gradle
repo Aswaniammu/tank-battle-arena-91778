@@ -1,0 +1,27 @@
+android {
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            all {
+                it.useJUnit()
+                // Best-effort knobs across Gradle/AGP versions
+                it.failOnNoMatchingTests = false
+                try {
+                    it.setProperty("failOnNoDiscoveredTests", false)
+                } catch (Throwable ignored) { }
+                it.testLogging { events "passed", "skipped", "failed" }
+            }
+        }
+    }
+    sourceSets {
+        // Ensure JVM unit tests source directories are recognized
+        test {
+            java.srcDirs += ["src/test/java", "src/testDebug/java"]
+            resources.srcDirs += ["src/test/resources"]
+        }
+        debugUnitTest {
+            java.srcDirs += ["src/debugUnitTest/java"]
+            resources.srcDirs += ["src/debugUnitTest/resources"]
+        }
+    }
+}

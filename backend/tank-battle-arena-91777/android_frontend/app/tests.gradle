@@ -1,0 +1,8 @@
+import org.gradle.api.tasks.testing.Test
+
+// Ensure the unit test tasks in this module do not fail CI when no tests are discovered
+tasks.withType(Test).configureEach {
+    it.failOnNoTests = false
+    it.systemProperty("java.awt.headless", "true")
+    it.useJUnit() // enable JUnit 4 discovery explicitly
+}

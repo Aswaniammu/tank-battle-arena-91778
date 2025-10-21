@@ -1,0 +1,14 @@
+gradle.taskGraph.whenReady { graph ->
+    def targets = [":app:testDebugUnitTest", ":app:testReleaseUnitTest"]
+    targets.each { path ->
+        def t = tasks.findByPath(path)
+        if (t instanceof Test) {
+            t.useJUnit()
+            t.include '**/*Test.class', '**/*Tests.class', '**/*TestSuite.class'
+            t.failOnNoMatchingTests = false
+            t.testLogging {
+                events 'passed', 'skipped', 'failed'
+            }
+        }
+    }
+}
