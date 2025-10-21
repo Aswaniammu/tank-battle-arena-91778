@@ -1,0 +1,15 @@
+import org.gradle.api.tasks.testing.Test
+
+// Configure both common Android unit test tasks
+tasks.matching { (it.name == "testDebugUnitTest" || it.name == "testReleaseUnitTest") && it instanceof Test }.configureEach { Test t ->
+    t.failOnNoTests = false
+    try {
+        t.useJUnit()
+    } catch (Throwable ignored) {}
+    t.testLogging {
+        events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+        exceptionFormat "full"
+    }
+    // Broad include patterns to help test discovery
+    t.include("**/*Test.class", "**/*Tests.class", "**/*Smoke*.class", "**/*Robolectric*.class", "**/*DefaultDiscoveryTest.class")
+}

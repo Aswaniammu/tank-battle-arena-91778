@@ -9,6 +9,8 @@ Tables:
 
 Relationships and indexes are defined for efficient querying.
 """
+"""SQLAlchemy ORM models for Tank Battle Arena MVP schema."""
+
 from datetime import datetime
 from typing import List, Optional
 

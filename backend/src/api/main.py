@@ -5,52 +5,11 @@ from sqlalchemy.orm import Session
 from src.api.db import Base, engine, get_session
 from src.api import models  # noqa: F401  # ensure models are imported so metadata is aware
 
-# Routers
-from src.api.system_docs import router as system_docs_router
-from src.api.system_diag import router as system_diag_router
-from src.api.system_ws_docs import router as system_ws_docs_router
-from src.api.system_docs_index import router as system_docs_index_router
-from src.api.system_realtime_docs import router as system_realtime_docs_router
-from src.api.system_info import router as system_info_router
-from src.api.system_routes import router as system_routes_router
-from src.api.system_echo import router as system_echo_router
-from src.api.system_ws_usage import router as system_ws_usage_router
-from src.api.system_ping import router as system_ping_router
-from src.api.system_openapi_meta import router as system_openapi_meta_router
-from src.api.system_routes import router as system_routes_router
-from src.api.system_seed import router as system_seed_router
-from src.api.system_counts import router as system_counts_router
-from src.api.system_ws_usage import router as system_ws_usage_router
-from src.api.users import router as users_router
-from src.api.tanks import router as tanks_router
-from src.api.system_openapi import router as system_openapi_router
-from src.api.system_dbfile import router as system_dbfile_router
-from src.api.system_schema import router as system_schema_router
-from src.api.system_summary import router as system_summary_router
-from src.api.system_tables import router as system_tables_router
-from src.api.system_versions import router as system_versions_router
-from src.api.system_discovery import router as system_discovery_router
-from src.api.system_seed import router as system_seed_router
-from src.api.system_seed import router as system_seed_router
-from src.api.users import router as users_router
-from src.api.users_detail import router as users_detail_router
-from src.api.user_tanks import router as user_tanks_router
-from src.api.tanks import router as tanks_router
-from src.api.tanks_detail import router as tanks_detail_router
-from src.api.matches import router as matches_router
-from src.api.match_players import router as match_players_router
-from src.api.matches_detail import router as matches_detail_router
-from src.api.player_states import router as player_states_router
-from src.api.player_states_detail import router as player_states_detail_router
-from src.api.leaderboard import router as leaderboard_router
-from src.api.leaderboard_user import router as leaderboard_user_router
-
-# Configure OpenAPI metadata and tags
+# OpenAPI metadata and tags
 openapi_tags = [
     {"name": "health", "description": "Service health and status"},
     {"name": "system", "description": "System and initialization endpoints"},
-    {"name": "docs", "description": "Documentation helper endpoints"},
-    {"name": "websocket", "description": "WebSocket documentation"},
+    {"name": "seed", "description": "Utilities to populate minimal demo data for quick testing"},
 ]
 
 app = FastAPI(
@@ -78,13 +37,7 @@ def on_startup():
 
 
 # PUBLIC_INTERFACE
-@app.get(
-    "/",
-    tags=["health"],
-    summary="Health Check",
-    description="Simple health check endpoint.",
-    operation_id="health_check",
-)
+@app.get("/", tags=["health"], summary="Health Check", description="Simple health check endpoint.")
 def health_check():
     """Health check endpoint returning a simple status message."""
     return {"message": "Healthy"}
@@ -96,60 +49,71 @@ def health_check():
     tags=["system"],
     summary="Database Info",
     description="Returns basic database connectivity info for debugging.",
-    operation_id="system_db_info",
 )
 def db_info(db: Session = Depends(get_session)):
     """Return a minimal payload to confirm DB session works."""
-    # Since it's SQLite MVP, return the database URL masked
     from src.api.db import DATABASE_URL
-
-    masked = "sqlite:///./data/app.db" if DATABASE_URL.startswith("sqlite") else DATABASE_URL
-    # Basic query to ensure session is usable: count users
     from sqlalchemy import text
 
+    masked = "sqlite:///./data/app.db" if DATABASE_URL.startswith("sqlite") else DATABASE_URL
     try:
-        count_users = db.execute(text("SELECT COUNT(*) FROM users")).scalar()  # may be 0 if unseeded
+        count_users = db.execute(text("SELECT COUNT(*) FROM users")).scalar()
     except Exception:
         count_users = None
     return {"database_url": masked, "users_count": count_users}
 
 
-# Include routers
-app.include_router(system_docs_router)
-app.include_router(system_diag_router)
-app.include_router(system_ws_docs_router)
-app.include_router(system_docs_index_router)
-app.include_router(system_realtime_docs_router)
-app.include_router(system_seed_router)
-app.include_router(system_counts_router)
-app.include_router(system_ws_usage_router)
-app.include_router(system_ping_router)
-app.include_router(system_openapi_meta_router)
-app.include_router(system_routes_router)
-app.include_router(users_router)
-app.include_router(tanks_router)
-app.include_router(system_openapi_router)
-app.include_router(system_dbfile_router)
-app.include_router(system_schema_router)
+# Include seed router
+from src.api.seed_routes import router as seed_router  # noqa: E402
+from src.api.system_summary import router as system_summary_router  # noqa: E402
+from src.api.system_tables import router as system_tables_router  # noqa: E402
+from src.api.system_openapi import router as system_openapi_router  # noqa: E402
+from src.api.system_versions import router as system_versions_router  # noqa: E402
+from src.api.system_schema import router as system_schema_router  # noqa: E402
+from src.api.system_health import router as system_health_router  # noqa: E402
+from src.api.system_discovery import router as system_discovery_router  # noqa: E402
+from src.api.db_schema_snapshot import router as db_schema_snapshot_router  # noqa: E402
+from src.api.system_ws_help import router as system_ws_help_router  # noqa: E402
+from src.api.leaderboard_routes import router as leaderboard_router  # noqa: E402
+from src.api.users_routes import router as users_router  # noqa: E402
+from src.api.tanks_routes import router as tanks_router  # noqa: E402
+from src.api.matches_routes import router as matches_router  # noqa: E402
+from src.api.playerstate_routes import router as playerstate_router  # noqa: E402
+from src.api.leaderboard_write_routes import router as leaderboard_write_router  # noqa: E402
+from src.api.users_get_route import router as users_get_router  # noqa: E402
+from src.api.tanks_get_route import router as tanks_get_router  # noqa: E402
+from src.api.matches_get_route import router as matches_get_router  # noqa: E402
+from src.api.playerstate_get_route import router as playerstate_get_router  # noqa: E402
+from src.api.leaderboard_get_route import router as leaderboard_get_router  # noqa: E402
+from src.api.users_list_route import router as users_list_router  # noqa: E402
+from src.api.tanks_list_route import router as tanks_list_router  # noqa: E402
+from src.api.matches_list_route import router as matches_list_router  # noqa: E402
+from src.api.playerstate_list_route import router as playerstate_list_router  # noqa: E402
+from src.api.leaderboard_list_route import router as leaderboard_list_router  # noqa: E402
+
+app.include_router(seed_router)
 app.include_router(system_summary_router)
 app.include_router(system_tables_router)
+app.include_router(system_openapi_router)
 app.include_router(system_versions_router)
+app.include_router(system_schema_router)
+app.include_router(system_health_router)
 app.include_router(system_discovery_router)
-app.include_router(system_seed_router)
-app.include_router(system_info_router)
-app.include_router(system_routes_router)
-app.include_router(system_echo_router)
-app.include_router(system_ws_usage_router)
-app.include_router(system_seed_router)
-app.include_router(users_router)
-app.include_router(users_detail_router)
-app.include_router(user_tanks_router)
-app.include_router(tanks_router)
-app.include_router(tanks_detail_router)
-app.include_router(matches_router)
-app.include_router(match_players_router)
-app.include_router(matches_detail_router)
-app.include_router(player_states_router)
-app.include_router(player_states_detail_router)
+app.include_router(db_schema_snapshot_router)
+app.include_router(system_ws_help_router)
 app.include_router(leaderboard_router)
-app.include_router(leaderboard_user_router)
+app.include_router(users_router)
+app.include_router(tanks_router)
+app.include_router(matches_router)
+app.include_router(playerstate_router)
+app.include_router(leaderboard_write_router)
+app.include_router(users_get_router)
+app.include_router(tanks_get_router)
+app.include_router(matches_get_router)
+app.include_router(playerstate_get_router)
+app.include_router(leaderboard_get_router)
+app.include_router(users_list_router)
+app.include_router(tanks_list_router)
+app.include_router(matches_list_router)
+app.include_router(playerstate_list_router)
+app.include_router(leaderboard_list_router)

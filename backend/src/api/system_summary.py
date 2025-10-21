@@ -1,21 +1,23 @@
-from datetime import datetime, timezone
 from fastapi import APIRouter
+from sqlalchemy import inspect
+from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/system", tags=["system"])
+from src.api.db import get_session, DATABASE_URL
 
+router = APIRouter(tags=["system"])
 
 # PUBLIC_INTERFACE
-@router.get(
-    "/summary",
-    summary="System summary",
-    description="Provides a quick summary including service name, version, and current UTC time.",
-    operation_id="system_summary",
-)
-def system_summary():
-    """Return a minimal service summary useful for quick smoke checks."""
+@router.get("/system/summary", summary="System Summary", description="Returns basic runtime information.")
+def system_summary(db: Session = get_session().__next__()):
+    """Return a minimal system summary for diagnostics."""
+    try:
+        inspector = inspect(db.bind)
+        tables = sorted(inspector.get_table_names())
+    except Exception:
+        tables = None
+    masked = "sqlite:///./data/app.db" if DATABASE_URL.startswith("sqlite") else DATABASE_URL
     return {
-        "service": "Tank Battle Arena Backend",
-        "version": "0.1.0",
-        "time_utc": datetime.now(timezone.utc).isoformat(),
         "status": "ok",
+        "database_url": masked,
+        "tables": tables,
     }

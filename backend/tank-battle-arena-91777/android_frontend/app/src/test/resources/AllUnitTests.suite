@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="AllUnitTestsSuite">
+  <test name="AllUnitTests">
+    <classes>
+      <class name="com.tankbattlearena.SmokeUnitTest"/>
+      <class name="com.tankbattlearena.KotlinSmokeUnitTest"/>
+      <class name="com.tankbattlearena.ExampleUnitTest"/>
+      <class name="com.tankbattlearena.PlainJavaSmokeTest"/>
+      <class name="com.tankbattlearena.AllUnitTests"/>
+    </classes>
+  </test>
+</suite>

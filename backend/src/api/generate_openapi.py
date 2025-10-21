@@ -1,19 +1,19 @@
+"""Utility script to export the FastAPI application's OpenAPI schema.
+
+Run this module to generate interfaces/openapi.json based on the current app.
+"""
 import json
 import os
 
-# Import app so that all routers and startup wiring are registered prior to schema generation
-from src.api.main import app  # noqa: F401
+from src.api.main import app
 
-def main() -> None:
-    """Generate and write the OpenAPI schema for the backend into interfaces/openapi.json."""
-    # PUBLIC_INTERFACE
-    openapi_schema = app.openapi()
+# Get the OpenAPI schema
+openapi_schema = app.openapi()
 
-    output_dir = "interfaces"
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "openapi.json")
-    with open(output_path, "w") as f:
-        json.dump(openapi_schema, f, indent=2)
+# Write to file
+output_dir = "interfaces"
+os.makedirs(output_dir, exist_ok=True)
+output_path = os.path.join(output_dir, "openapi.json")
 
-if __name__ == "__main__":
-    main()
+with open(output_path, "w") as f:
+    json.dump(openapi_schema, f, indent=2)

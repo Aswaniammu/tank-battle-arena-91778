@@ -1,0 +1,22 @@
+import org.gradle.api.tasks.testing.Test
+
+gradle.settingsEvaluated { Settings settings ->
+    settings.gradle.rootProject {
+        allprojects {
+            tasks.withType(Test).configureEach { Test t ->
+                t.failOnNoTests = false
+                t.testLogging {
+                    events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+                }
+                try {
+                    t.useJUnit()
+                } catch (Throwable ignored) { }
+                t.include("**/SmokeUnitTest.class",
+                          "**/KotlinSmokeUnitTest.class",
+                          "**/ExampleUnitTest.class",
+                          "**/PlainJavaSmokeTest.class",
+                          "**/AllUnitTests.class")
+            }
+        }
+    }
+}

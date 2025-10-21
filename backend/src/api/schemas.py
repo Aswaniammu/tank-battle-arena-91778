@@ -1,13 +1,14 @@
+"""Pydantic schemas for API input and output models.
+
+These schemas mirror the SQLAlchemy ORM models to provide clear, validated
+structures for request and response bodies. They are compatible with ORM objects
+via Pydantic v2's from_attributes configuration.
+"""
+
 from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, Field
-
-"""
-Pydantic schemas for API input/output.
-
-- Uses from_attributes=True for ORM model compatibility (Pydantic v2).
-"""
 
 
 # User Schemas

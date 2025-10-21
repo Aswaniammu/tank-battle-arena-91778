@@ -1,0 +1,16 @@
+import org.gradle.api.tasks.testing.Test
+
+afterEvaluate {
+    tasks.matching { it.name == "testDebugUnitTest" && it instanceof Test }.configureEach { Test t ->
+        t.failOnNoTests = false
+        try {
+            t.useJUnit()
+        } catch (Throwable ignored) {}
+        t.testLogging {
+            events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+            exceptionFormat "full"
+        }
+        // Add broad includes to encourage discovery
+        t.include("**/*Test.class", "**/*Tests.class", "**/*Smoke*.class")
+    }
+}

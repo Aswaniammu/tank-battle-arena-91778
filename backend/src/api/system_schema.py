@@ -1,17 +1,30 @@
 from fastapi import APIRouter
-from src.api.db_schema_snapshot import snapshot_schema
+from sqlalchemy import inspect
+from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/system", tags=["system"])
+from src.api.db import get_session
 
+router = APIRouter(tags=["system"])
 
 # PUBLIC_INTERFACE
-@router.post(
-    "/schema-snapshot",
-    summary="Snapshot DB schema",
-    description="Generates a JSON snapshot of current DB schema and returns the output path.",
-    operation_id="system_schema_snapshot",
-)
-def schema_snapshot():
-    """Trigger a DB schema snapshot and return the path of the generated file."""
-    path = snapshot_schema()
-    return {"status": "ok", "output": path}
+@router.get("/system/schema-snapshot", summary="Schema Snapshot", description="Returns tables with columns and types.")
+def schema_snapshot(db: Session = get_session().__next__()):
+    """Return a lightweight snapshot of the database schema (tables, columns, types)."""
+    out = {}
+    try:
+        inspector = inspect(db.bind)
+        for table in inspector.get_table_names():
+            cols = inspector.get_columns(table)
+            out[table] = [
+                {
+                    "name": c.get("name"),
+                    "type": str(c.get("type")),
+                    "nullable": c.get("nullable"),
+                    "default": str(c.get("default")),
+                    "primary_key": c.get("primary_key"),
+                }
+                for c in cols
+            ]
+    except Exception:
+        out = {}
+    return {"schema": out}

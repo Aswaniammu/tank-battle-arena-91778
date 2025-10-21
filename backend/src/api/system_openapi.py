@@ -1,24 +1,16 @@
-"""System endpoint exposing OpenAPI metadata for quick inspection."""
 from fastapi import APIRouter
 from src.api.main import app
 
-router = APIRouter(prefix="/system", tags=["system"])
-
+router = APIRouter(tags=["system"])
 
 # PUBLIC_INTERFACE
-@router.get(
-    "/openapi-meta",
-    summary="OpenAPI metadata",
-    description="Returns a summary of OpenAPI title, version, and tags.",
-    operation_id="system_openapi_meta",
-)
+@router.get("/system/openapi-meta", summary="OpenAPI Meta", description="Returns title and version from the OpenAPI schema.")
 def openapi_meta():
-    """Return OpenAPI title, version, and tags to aid quick inspection."""
+    """Return minimal OpenAPI metadata for quick checks."""
     schema = app.openapi()
-    tags = [t.get("name") for t in schema.get("tags", [])]
+    info = schema.get("info", {})
     return {
-        "title": schema.get("info", {}).get("title"),
-        "version": schema.get("info", {}).get("version"),
-        "tags": tags,
+        "title": info.get("title"),
+        "version": info.get("version"),
         "paths_count": len(schema.get("paths", {})),
     }

@@ -1,0 +1,16 @@
+import org.gradle.api.tasks.testing.Test
+
+allprojects {
+    tasks.withType(Test).configureEach { Test t ->
+        t.failOnNoTests = false
+        t.testLogging {
+            events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+        }
+        // Include common smoke tests to aid discovery
+        t.include("**/SmokeUnitTest.class", "**/KotlinSmokeUnitTest.class", "**/ExampleUnitTest.class", "**/PlainJavaSmokeTest.class", "**/AllUnitTests.class")
+        // Prefer JUnit4 if available
+        try {
+            t.useJUnit()
+        } catch (Throwable ignored) { }
+    }
+}

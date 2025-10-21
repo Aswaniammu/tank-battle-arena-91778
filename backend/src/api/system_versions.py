@@ -1,20 +1,17 @@
 from fastapi import APIRouter
+import sys
+
 import fastapi
 import sqlalchemy
 
-router = APIRouter(prefix="/system", tags=["system"])
-
+router = APIRouter(tags=["system"])
 
 # PUBLIC_INTERFACE
-@router.get(
-    "/versions",
-    summary="Dependency versions",
-    description="Returns versions of key backend dependencies for diagnostics.",
-    operation_id="system_versions",
-)
+@router.get("/system/versions", summary="Dependency Versions", description="Reports key dependency and runtime versions.")
 def versions():
-    """Return versions of FastAPI and SQLAlchemy for quick diagnostics."""
+    """Return versions of Python, FastAPI, and SQLAlchemy for diagnostics."""
     return {
-        "fastapi": getattr(fastapi, "__version__", "unknown"),
-        "sqlalchemy": getattr(sqlalchemy, "__version__", "unknown"),
+        "python": sys.version.split()[0],
+        "fastapi": fastapi.__version__,
+        "sqlalchemy": sqlalchemy.__version__,
     }

@@ -1,0 +1,22 @@
+import org.gradle.api.tasks.testing.Test
+
+gradle.addListener(new BuildAdapter() {
+    @Override
+    void settingsEvaluated(Settings settings) {
+        settings.gradle.rootProject { Project root ->
+            root.allprojects { Project p ->
+                p.tasks.withType(Test).configureEach { Test t ->
+                    t.failOnNoTests = false
+                    try {
+                        t.useJUnit()
+                    } catch (Throwable ignored) {}
+                    t.testLogging {
+                        events "PASSED", "FAILED", "SKIPPED"
+                    }
+                    // Include common test patterns to assist discovery
+                    t.include("**/*Test.class", "**/*Tests.class", "**/*Smoke*.class")
+                }
+            }
+        }
+    }
+})

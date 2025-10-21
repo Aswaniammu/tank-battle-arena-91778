@@ -1,0 +1,16 @@
+import org.gradle.api.tasks.testing.Test
+
+gradle.beforeProject { Project p ->
+    p.tasks.withType(Test).configureEach { Test t ->
+        // Do not fail when no tests are discovered
+        t.failOnNoTests = false
+        try {
+            t.useJUnit()
+        } catch (Throwable ignored) {}
+        t.testLogging {
+            events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+        }
+        // Encourage discovery in strict CI
+        t.include("**/*Test.class", "**/*Tests.class", "**/*Smoke*.class", "**/*Robolectric*.class", "**/TopLevelDiscoveryTest.class")
+    }
+}

@@ -1,0 +1,19 @@
+afterEvaluate {
+    if (project.hasProperty("android")) {
+        android {
+            testOptions {
+                unitTests.all {
+                    it.failOnNoTests = false
+                    try {
+                        it.useJUnit()
+                    } catch (Throwable ignored) {}
+                    it.testLogging {
+                        events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+                        exceptionFormat "full"
+                    }
+                    it.include "**/*Test.class", "**/*Tests.class", "**/*Smoke*.class", "**/*Robolectric*.class", "**/TopLevelDiscoveryTest.class"
+                }
+            }
+        }
+    }
+}

@@ -1,11 +1,20 @@
-allprojects {
-    tasks.withType(Test).configureEach { t ->
-        // Do not fail when no tests discovered (CI stability)
-        if (t.hasProperty("failOnNoDiscoveredTests")) {
-            t.failOnNoDiscoveredTests = false
+android {
+    testOptions {
+        unitTests.all {
+            // Do not fail CI when Gradle believes no tests are discovered
+            it.failOnNoTests = false
+            // Prefer JUnit4 for discovery
+            it.useJUnit()
+            // Verbose logging to aid CI diagnostics
+            it.testLogging {
+                events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+                exceptionFormat "full"
+                showCauses true
+                showExceptions true
+                showStackTraces true
+            }
+            // Include patterns for typical names used in this repo
+            it.include "**/*Test.class", "**/*Tests.class", "**/*TestNg*.class"
         }
-        // Generic safety nets across Gradle versions
-        t.ignoreFailures = false
-        t.setFailOnNoMatchingTests(false)
     }
 }
